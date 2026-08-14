@@ -52,9 +52,9 @@ function applyVoice(u: SpeechSynthesisUtterance, voices: SpeechSynthesisVoice[])
   } else {
     u.lang = 'fr-FR'
   }
-  // Voix plus vive et enjouée — un peu plus rapide, un peu plus aiguë.
-  u.rate = 1.08
-  u.pitch = 1.18
+  // Un peu plus lente : moins mécanique, plus naturelle pour un enfant de CP.
+  u.rate = 0.96
+  u.pitch = 1.12
   u.volume = 1
 }
 
