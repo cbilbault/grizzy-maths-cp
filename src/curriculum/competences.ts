@@ -1,0 +1,62 @@
+import type { Competence } from '../engine/types'
+
+export const COMPETENCES: Competence[] = [
+  { id: 'denombre-10', season: 1, domain: 'nombres', label: 'Dénombrer jusqu’à 10' },
+  { id: 'construire-10', season: 1, domain: 'nombres', label: 'Construire une collection jusqu’à 10' },
+  { id: 'ecrire-lire-10', season: 1, domain: 'nombres', label: 'Lire et écrire les nombres jusqu’à 10' },
+  { id: 'comparer-10', season: 1, domain: 'nombres', label: 'Comparer jusqu’à 10' },
+  { id: 'suite-orale', season: 1, domain: 'nombres', label: 'Suite orale et +1 / +2' },
+  { id: 'doubles-10', season: 1, domain: 'calcul', label: 'Doubles jusqu’à 10' },
+  { id: 'decompo-10', season: 1, domain: 'calcul', label: 'Décompositions et compléments à 10' },
+  { id: 'pb-pt-10', season: 1, domain: 'problemes', label: 'Problèmes parties-tout jusqu’à 10' },
+  { id: 'spatial-base', season: 1, domain: 'espace', label: 'Gauche, droite, sur, sous, entre' },
+  { id: 'longueurs-compare', season: 1, domain: 'grandeurs', label: 'Comparer des longueurs' },
+  { id: 'tri-critere', season: 1, domain: 'donnees', label: 'Trier selon un critère' },
+
+  { id: 'nombres-20', season: 2, domain: 'nombres', label: 'Nombres jusqu’à 20' },
+  { id: 'nombres-59', season: 2, domain: 'nombres', label: 'Nombres jusqu’à 59' },
+  { id: 'unites-dizaines', season: 2, domain: 'nombres', label: 'Unités et dizaines' },
+  { id: 'reps-multiples', season: 2, domain: 'nombres', label: 'Plusieurs représentations d’un nombre' },
+  { id: 'add-mentale', season: 2, domain: 'calcul', label: 'Addition mentale' },
+  { id: 'complements-10', season: 2, domain: 'calcul', label: 'Compléments à 10' },
+  { id: 'monnaie-intro', season: 2, domain: 'grandeurs', label: 'Pièces et billets' },
+  { id: 'formes-lignes', season: 2, domain: 'espace', label: 'Lignes, points, formes simples' },
+  { id: 'tableau-1', season: 2, domain: 'donnees', label: 'Tableau à une entrée' },
+
+  { id: 'nombres-100', season: 3, domain: 'nombres', label: 'Nombres jusqu’à 100' },
+  { id: 'cassage-dizaine', season: 3, domain: 'calcul', label: 'Casser une dizaine' },
+  { id: 'plus-moins-10', season: 3, domain: 'calcul', label: 'Ajouter ou retrancher 10' },
+  { id: 'complement-dizaine', season: 3, domain: 'calcul', label: 'Complément à la dizaine supérieure' },
+  { id: 'sens-multiplication', season: 3, domain: 'problemes', label: 'Sens de « fois »' },
+  { id: 'partage', season: 3, domain: 'problemes', label: 'Partage équitable' },
+  { id: 'moitie-quart', season: 3, domain: 'nombres', label: 'Moitié, demi, quart' },
+  { id: 'formes-planes', season: 3, domain: 'espace', label: 'Carré, rectangle, triangle, cercle' },
+  { id: 'mesure-cm', season: 3, domain: 'grandeurs', label: 'Mesurer en centimètres' },
+  { id: 'monnaie-sommes', season: 3, domain: 'grandeurs', label: 'Composer une somme' },
+  { id: 'tableau-2', season: 3, domain: 'donnees', label: 'Tableau à double entrée' },
+
+  { id: 'nombres-79', season: 4, domain: 'nombres', label: 'Nombres jusqu’à 79' },
+  { id: 'add-posee', season: 4, domain: 'calcul', label: 'Addition posée' },
+  { id: 'plus9', season: 4, domain: 'calcul', label: 'Ajouter 9' },
+  { id: 'add-deux', season: 4, domain: 'calcul', label: 'Ajouter deux nombres < 100' },
+  { id: 'pb-2etapes', season: 4, domain: 'problemes', label: 'Problèmes additifs en 2 étapes' },
+  { id: 'pb-multiplicatif', season: 4, domain: 'problemes', label: 'Problèmes multiplicatifs' },
+  { id: 'heure-entiere', season: 4, domain: 'grandeurs', label: 'Heures entières' },
+  { id: 'quadrillage', season: 4, domain: 'espace', label: 'Reproduction sur quadrillage' },
+  { id: 'ordinaux-20', season: 4, domain: 'nombres', label: 'Nombres ordinaux jusqu’au 20ᵉ' },
+
+  { id: 'nombres-100-fin', season: 5, domain: 'nombres', label: 'Maîtrise des nombres jusqu’à 100' },
+  { id: 'fluence-faits', season: 5, domain: 'calcul', label: 'Fluence des faits numériques' },
+  { id: 'doubles-dizaines', season: 5, domain: 'calcul', label: 'Doubles des dizaines' },
+  { id: 'moities', season: 5, domain: 'calcul', label: 'Moitiés des nombres pairs' },
+  { id: 'solides', season: 5, domain: 'espace', label: 'Cube et pavé' },
+  { id: 'graphique-barres', season: 5, domain: 'donnees', label: 'Diagramme en barres' },
+]
+
+export const SEASON_TITLES: Record<1 | 2 | 3 | 4 | 5, string> = {
+  1: 'La cabane est en bazar',
+  2: 'Les caisses de dix',
+  3: 'On casse une dizaine',
+  4: 'L’horloge et les colonnes',
+  5: 'Le grand ménage de juin',
+}

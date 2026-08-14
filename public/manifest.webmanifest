@@ -1,0 +1,12 @@
+{
+  "name": "Grizzy et les Lemmings — Maths CP",
+  "short_name": "Grizzy Maths",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#2D5A3D",
+  "theme_color": "#2D5A3D",
+  "lang": "fr",
+  "icons": [
+    { "src": "./assets/lemming.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

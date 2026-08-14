@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fredoka", system-ui, sans-serif;
+  --color-honey: #e8a317;
+  --color-honey-dark: #c4840c;
+  --color-wood: #6b3f1d;
+  --color-wood-light: #8b5a33;
+  --color-cream: #fff6e4;
+  --color-glacier: #5bb4d4;
+  --color-forest: #2d5a3d;
+  --color-moss: #3d7a52;
+  --color-bark: #3a2414;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  background: #1c3324;
+  color: #3a2414;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+.sprite-pop {
+  animation: pop 0.35s ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.4;
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
