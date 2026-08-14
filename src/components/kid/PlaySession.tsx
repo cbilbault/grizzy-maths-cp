@@ -112,7 +112,7 @@ function PlaySession({
       if (then === 'end') {
         onDone?.()
         setPhase('end')
-        speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés.', audioOn)
+        speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés. Super travail !', audioOn)
       } else {
         setI((n) => n + 1)
         setOk(null)
@@ -150,7 +150,7 @@ function PlaySession({
       else {
         onDone?.()
         setPhase('end')
-        speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés.', audioOn)
+        speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés. Super travail !', audioOn)
       }
     } else if (ok && streakOk > 0 && streakOk % 3 === 0) {
       playClip('next')
@@ -228,7 +228,7 @@ function PlaySession({
               setGoods((n) => n + 1)
             }
             if (ex.type === 'problem-4ph') addProblem()
-            speak(good ? 'Oui ! Les Lemmings sont rangés.' : 'On recommence ensemble.', audioOn)
+            speak(good ? 'Oui ! Bravo, c’est juste !' : 'Presque ! On recommence ensemble, tout doucement.', audioOn)
             setPhase('feedback')
           }}
         />

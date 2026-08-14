@@ -25,6 +25,7 @@ interface ProgressState {
   audioOn: boolean
   reduceMotion: boolean
   videosOn: boolean
+  voiceName: string
   leftHanded: boolean
   dailyLimitMin: number
   secondsToday: { day: string; seconds: number }
@@ -40,6 +41,7 @@ interface ProgressState {
   toggleAudio: () => void
   toggleMotion: () => void
   toggleVideos: () => void
+  setVoiceName: (name: string) => void
   toggleHand: () => void
   setLimit: (min: number) => void
   addSeconds: (s: number) => void
@@ -76,6 +78,7 @@ export const useProgress = create<ProgressState>()(
       audioOn: true,
       reduceMotion: false,
       videosOn: true,
+      voiceName: '',
       leftHanded: false,
       dailyLimitMin: 25,
       secondsToday: { day: dayKey(), seconds: 0 },
@@ -118,6 +121,7 @@ export const useProgress = create<ProgressState>()(
       toggleAudio: () => set({ audioOn: !get().audioOn }),
       toggleMotion: () => set({ reduceMotion: !get().reduceMotion }),
       toggleVideos: () => set({ videosOn: !get().videosOn }),
+      setVoiceName: (voiceName) => set({ voiceName }),
       toggleHand: () => set({ leftHanded: !get().leftHanded }),
       setLimit: (dailyLimitMin) => set({ dailyLimitMin }),
       addSeconds: (s) => {

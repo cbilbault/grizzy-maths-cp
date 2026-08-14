@@ -20,7 +20,7 @@ export function Home() {
 
   useEffect(() => {
     speak(
-      'Bienvenue dans la cabane de Grizzy et les Lemmings. Choisis la mission du jour, le réveil du frigo, ou le coin libre.',
+      'Coucou ! Bienvenue dans la cabane de Grizzy et les Lemmings. Choisis la mission du jour, le réveil du frigo, ou le coin libre. On va s’amuser !',
       audioOn,
     )
   }, [audioOn])

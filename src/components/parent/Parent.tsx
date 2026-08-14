@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { listFrenchVoices, setPreferredVoice, speak, unlockAudio } from '../../audio/tts'
 import { COMPETENCES, SEASON_TITLES } from '../../curriculum/competences'
 import { MISSIONS } from '../../curriculum/missions'
 import { useProgress } from '../../state/store'
@@ -15,6 +16,14 @@ export function Parent() {
   const s = useProgress()
   const weekCount = s.problemsThisWeek.count
   const minutes = Math.round(s.secondsToday.seconds / 60)
+  const [voices, setVoices] = useState(() => listFrenchVoices())
+
+  useEffect(() => {
+    const refresh = () => setVoices(listFrenchVoices())
+    refresh()
+    window.speechSynthesis?.addEventListener('voiceschanged', refresh)
+    return () => window.speechSynthesis?.removeEventListener('voiceschanged', refresh)
+  }, [])
 
   const bySeason = useMemo(() => {
     return ([1, 2, 3, 4, 5] as const).map((season) => ({
@@ -110,6 +119,39 @@ export function Parent() {
           <label className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
             Audio
             <input type="checkbox" checked={s.audioOn} onChange={s.toggleAudio} />
+          </label>
+          <label className="flex flex-col gap-2 rounded-xl bg-white px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+            Voix française
+            <span className="flex flex-wrap items-center gap-2">
+              <select
+                className="max-w-full rounded border px-2 py-1"
+                value={s.voiceName}
+                onChange={(e) => {
+                  s.setVoiceName(e.target.value)
+                  setPreferredVoice(e.target.value)
+                }}
+              >
+                <option value="">Automatique (la plus enjouée)</option>
+                {voices.map((v) => (
+                  <option key={v.name} value={v.name}>
+                    {v.name} ({v.lang})
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="rounded-lg bg-honey px-3 py-1 font-semibold"
+                onClick={() => {
+                  unlockAudio()
+                  speak(
+                    'Coucou ! Moi c’est Grizi. Avec les Lé-mingues, on va compter et s’amuser !',
+                    true,
+                  )
+                }}
+              >
+                Écouter
+              </button>
+            </span>
           </label>
           <label className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
             Moins d’animations
