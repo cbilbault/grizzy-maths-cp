@@ -145,7 +145,17 @@ export function Lemming({ className = '', jar = false, onClick }: { className?: 
   const src = jar ? asset('assets/lemming-jar.png') : asset('assets/lemming.png')
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} className="p-0">
+      <button
+        type="button"
+        onClick={(e) => {
+          const el = e.currentTarget
+          el.classList.remove('hop-tap')
+          void el.offsetWidth
+          el.classList.add('hop-tap')
+          onClick()
+        }}
+        className="p-0"
+      >
         <img src={src} alt="Lemming" className={`object-contain ${className}`} />
       </button>
     )

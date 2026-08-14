@@ -1,10 +1,16 @@
+import { useEffect } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { FreePlay } from './components/kid/FreePlay'
 import { Home } from './components/kid/Home'
 import { MissionPlay, RitualPlay } from './components/kid/PlaySession'
 import { Parent } from './components/parent/Parent'
+import { useProgress } from './state/store'
 
 export default function App() {
+  const reduceMotion = useProgress((s) => s.reduceMotion)
+  useEffect(() => {
+    document.documentElement.classList.toggle('reduce-motion', reduceMotion)
+  }, [reduceMotion])
   return (
     <HashRouter>
       <div className="flex h-full min-h-dvh flex-col">

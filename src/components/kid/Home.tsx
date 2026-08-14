@@ -32,17 +32,17 @@ export function Home() {
           <p className="text-sm uppercase tracking-wide">Grizzy et les Lemmings</p>
           <p className="text-lg font-bold">Maths CP</p>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-cream/90 px-3 py-1 text-xl font-bold">
-          <img src={asset('assets/jar.png')} alt="" className="h-8 w-8" />
+        <div className="pot-pulse flex items-center gap-2 rounded-full bg-cream/90 px-3 py-1 text-xl font-bold">
+          <img src={asset('assets/jar.png')} alt="" className="h-8 w-8 idle-hop" />
           {pots}
         </div>
       </header>
 
       <div className="flex flex-1 flex-col items-center justify-end gap-3 pb-6 sm:flex-row sm:items-end sm:justify-center sm:gap-8">
         <div className="relative">
-          <Grizzy className="h-36 drop-shadow-xl sm:h-56" />
-          <Lemming className="absolute -right-4 bottom-4 h-14 w-14" />
-          <Lemming className="absolute -left-3 bottom-8 h-12 w-12" />
+          <Grizzy className="idle-bob h-36 drop-shadow-xl sm:h-56" />
+          <Lemming className="idle-hop absolute -right-4 bottom-4 h-14 w-14" />
+          <Lemming className="idle-hop delay absolute -left-3 bottom-8 h-12 w-12" />
         </div>
         <div className="flex w-[min(100%,22rem)] flex-col gap-3 px-4">
           <p className="rounded-2xl bg-cream/90 p-3 text-center text-lg">

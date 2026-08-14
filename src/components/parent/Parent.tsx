@@ -116,6 +116,10 @@ export function Parent() {
             <input type="checkbox" checked={s.reduceMotion} onChange={s.toggleMotion} />
           </label>
           <label className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
+            Petites vidéos-récompenses
+            <input type="checkbox" checked={s.videosOn} onChange={s.toggleVideos} />
+          </label>
+          <label className="flex items-center justify-between rounded-xl bg-white px-3 py-2">
             Gaucher (pavé à gauche)
             <input type="checkbox" checked={s.leftHanded} onChange={s.toggleHand} />
           </label>

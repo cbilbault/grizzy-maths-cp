@@ -4,9 +4,11 @@ import { speak, stopSpeak, unlockAudio } from '../../audio/tts'
 import { MISSIONS } from '../../curriculum/missions'
 import { generateFromTemplate } from '../../engine/generate'
 import type { Exercise, Room } from '../../engine/types'
+import { pickReward, type RewardClip } from '../../story/rewards'
 import { useProgress } from '../../state/store'
 import { ExerciseView } from '../exercises/ExerciseView'
-import { BigButton, Grizzy, Scene } from './ui'
+import { RewardShow, JarRain } from './RewardShow'
+import { BigButton, Grizzy, Lemming, Scene } from './ui'
 
 export function MissionPlay() {
   const { id } = useParams()
@@ -19,6 +21,7 @@ export function MissionPlay() {
       intro={mission.intro}
       exercises={buildExercises(mission.id, mission.competenceId, mission.sequence)}
       competenceId={mission.competenceId}
+      rewardAtEnd
       onDone={() => useProgress.getState().completeMission(mission.id)}
     />
   )
@@ -42,6 +45,7 @@ export function RitualPlay() {
       intro="Trois minutes avec Grizzy : le frigo ne s’ouvre que si tu calcules."
       exercises={buildExercises(`rituel-${day}`, 'add-mentale', sequence)}
       competenceId="add-mentale"
+      rewardAtEnd
     />
   )
 }
@@ -69,6 +73,7 @@ function PlaySession({
   exercises,
   competenceId,
   onDone,
+  rewardAtEnd,
 }: {
   room: Room
   title: string
@@ -76,6 +81,7 @@ function PlaySession({
   exercises: Exercise[]
   competenceId: string
   onDone?: () => void
+  rewardAtEnd?: boolean
 }) {
   const nav = useNavigate()
   const audioOn = useProgress((s) => s.audioOn)
@@ -86,11 +92,40 @@ function PlaySession({
   const mark = useProgress((s) => s.markCompetence)
   const addProblem = useProgress((s) => s.addProblem)
   const addSeconds = useProgress((s) => s.addSeconds)
+  const videosOn = useProgress((s) => s.videosOn)
+  const reduceMotion = useProgress((s) => s.reduceMotion)
+  const streakOk = useProgress((s) => s.streakOk)
   const [phase, setPhase] = useState<'intro' | 'play' | 'feedback' | 'end'>('intro')
   const [i, setI] = useState(0)
   const [ok, setOk] = useState<boolean | null>(null)
   const [mood, setMood] = useState<'idle' | 'happy' | 'surprise'>('idle')
+  const [goods, setGoods] = useState(0)
+  const [clip, setClip] = useState<RewardClip | null>(null)
+  const [seen, setSeen] = useState<string[]>([])
+  const [afterClip, setAfterClip] = useState<'next' | 'end'>('next')
   const ex = exercises[i]
+
+  const canVideo = videosOn && !reduceMotion
+
+  const playClip = (then: 'next' | 'end') => {
+    if (!canVideo) {
+      if (then === 'end') {
+        onDone?.()
+        setPhase('end')
+        speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés.', audioOn)
+      } else {
+        setI((n) => n + 1)
+        setOk(null)
+        setMood('idle')
+        setPhase('play')
+      }
+      return
+    }
+    const next = pickReward(seen)
+    setSeen((s) => [...s, next.id])
+    setAfterClip(then)
+    setClip(next)
+  }
 
   useEffect(() => {
     mark(competenceId, 'started')
@@ -111,6 +146,25 @@ function PlaySession({
 
   const nextAfterFeedback = () => {
     if (i + 1 >= exercises.length) {
+      if (rewardAtEnd && (onDone || goods >= 2)) playClip('end')
+      else {
+        onDone?.()
+        setPhase('end')
+        speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés.', audioOn)
+      }
+    } else if (ok && streakOk > 0 && streakOk % 3 === 0) {
+      playClip('next')
+    } else {
+      setI((n) => n + 1)
+      setOk(null)
+      setMood('idle')
+      setPhase('play')
+    }
+  }
+
+  const finishClip = () => {
+    setClip(null)
+    if (afterClip === 'end') {
       onDone?.()
       setPhase('end')
       speak('Bravo ! Grizzy récupère son canapé. Les Lemmings sont rangés.', audioOn)
@@ -140,7 +194,7 @@ function PlaySession({
 
       {phase === 'intro' && (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
-          <Grizzy mood="surprise" className="h-44" />
+          <Grizzy mood="surprise" className="idle-bob h-44" />
           <p className="max-w-lg rounded-3xl bg-cream/95 p-4 text-center text-xl">{intro}</p>
           <BigButton
             className="text-2xl"
@@ -169,7 +223,10 @@ function PlaySession({
             record(good)
             setOk(good)
             setMood(good ? 'happy' : 'surprise')
-            if (good) addPots(1)
+            if (good) {
+              addPots(1)
+              setGoods((n) => n + 1)
+            }
             if (ex.type === 'problem-4ph') addProblem()
             speak(good ? 'Oui ! Les Lemmings sont rangés.' : 'On recommence ensemble.', audioOn)
             setPhase('feedback')
@@ -180,8 +237,17 @@ function PlaySession({
       )}
 
       {phase === 'feedback' && (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
-          <Grizzy mood={mood} className={`h-44 ${ok ? '' : 'shake'}`} />
+        <div className="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden p-4">
+          {ok && !reduceMotion && <JarRain count={12} />}
+          <div className="relative z-10 flex flex-col items-center gap-3">
+          <Grizzy mood={mood} className={`h-44 ${ok ? 'win-bounce' : 'shake'}`} />
+          {ok && !reduceMotion && (
+            <div className="flex gap-1">
+              <Lemming className="idle-hop h-12 w-12" />
+              <Lemming className="idle-hop delay h-12 w-12" />
+              <Lemming className="idle-hop h-10 w-10" />
+            </div>
+          )}
           <p className="rounded-3xl bg-cream/95 px-6 py-3 text-2xl">{ok ? 'Bravo !' : 'On réessaie.'}</p>
           <BigButton
             onClick={() => {
@@ -195,18 +261,22 @@ function PlaySession({
           >
             {ok ? 'La suite' : 'Réessayer'}
           </BigButton>
+          </div>
         </div>
       )}
 
       {phase === 'end' && (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
-          <Grizzy mood="happy" className="h-52" />
+        <div className="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden p-4">
+          {!reduceMotion && <JarRain count={8} />}
+          <Grizzy mood="happy" className="win-bounce h-52" />
           <p className="rounded-3xl bg-cream/95 p-4 text-center text-2xl">
             Grizzy récupère le canapé. Trois pots de tartinade pour toi !
           </p>
           <BigButton onClick={() => nav('/')}>Retour à la cabane</BigButton>
         </div>
       )}
+
+      {clip && <RewardShow clip={clip} audioOn={audioOn} onDone={finishClip} />}
     </Scene>
   )
 }

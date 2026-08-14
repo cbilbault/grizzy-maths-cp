@@ -70,6 +70,139 @@ button {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .idle-bob,
+  .idle-hop,
+  .hop-tap,
+  .win-bounce,
+  .jar-fall,
+  .pot-pulse,
+  .numpad-key:active {
+    animation: none !important;
+  }
+}
+
+.reduce-motion .idle-bob,
+.reduce-motion .idle-hop,
+.reduce-motion .hop-tap,
+.reduce-motion .win-bounce,
+.reduce-motion .jar-fall,
+.reduce-motion .pot-pulse {
+  animation: none !important;
+}
+
+.idle-bob {
+  animation: idle-bob 2.6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.idle-hop {
+  animation: idle-hop 0.7s ease-in-out infinite;
+}
+
+.idle-hop.delay {
+  animation-delay: 0.35s;
+}
+
+.hop-tap {
+  animation: hop-tap 0.45s ease;
+}
+
+.win-bounce {
+  animation: win-bounce 0.7s ease;
+}
+
+.jar-fall {
+  animation: jar-fall 1.3s linear forwards;
+}
+
+.pot-pulse {
+  animation: pot-pulse 0.55s ease;
+}
+
+.numpad-key {
+  transition: transform 0.08s ease;
+}
+.numpad-key:active {
+  transform: scale(0.9);
+}
+
+@keyframes idle-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes idle-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes hop-tap {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-18px) scale(1.08);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes win-bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-22px) scale(1.08);
+  }
+  55% {
+    transform: translateY(0) scale(0.96);
+  }
+  75% {
+    transform: translateY(-10px) scale(1.04);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes jar-fall {
+  0% {
+    transform: translateY(-20vh) rotate(0deg);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(240deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pot-pulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .shake {
   animation: shake 0.4s ease;
 }
