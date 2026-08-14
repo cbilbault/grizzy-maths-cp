@@ -1,5 +1,7 @@
 # Grizzy et les Lemmings — Maths CP
 
+**Jouer en ligne :** [https://cbilbault.github.io/grizzy-maths-cp/](https://cbilbault.github.io/grizzy-maths-cp/)
+
 Web app familiale pour travailler les **mathématiques de CP** (programme français 2025, BO n° 41 du 31 octobre 2024) dans l’univers de **Grizzy et les Lemmings**.
 
 Jeu éducatif **non officiel**, sans lien avec Studio Hari. Usage à la maison.
