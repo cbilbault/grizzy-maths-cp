@@ -159,7 +159,7 @@ function PlaySession({
         <p className="mx-auto max-w-xl rounded-2xl bg-cream/95 px-4 py-2 text-center text-lg font-semibold text-bark">
           {ex.promptShort}
         </p>
-        <div className="mx-auto mb-3 flex min-h-0 w-[min(100%-1.5rem,52rem)] flex-1 overflow-auto rounded-3xl bg-cream/90 shadow-xl">
+        <div className="mx-auto mb-3 flex min-h-0 w-[min(100%-1rem,64rem)] flex-1 overflow-hidden rounded-3xl bg-cream/90 shadow-xl">
         <ExerciseView
           key={ex.id}
           ex={ex}

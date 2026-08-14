@@ -30,6 +30,28 @@ button {
   font-family: inherit;
 }
 
+.numpad {
+  width: min(100%, 28rem);
+}
+
+.numpad-key {
+  min-height: clamp(4.5rem, 15vmin, 7rem);
+  font-size: clamp(2rem, 7vmin, 3.25rem);
+  line-height: 1;
+}
+
+@media (max-height: 560px) {
+  .numpad-display {
+    min-height: 2.25rem !important;
+    margin-bottom: 0.25rem !important;
+    font-size: 1.6rem !important;
+  }
+  .numpad-key {
+    min-height: clamp(2.4rem, 12.5vh, 3.15rem);
+    font-size: clamp(1.25rem, 6.5vh, 1.75rem);
+  }
+}
+
 .sprite-pop {
   animation: pop 0.35s ease;
 }

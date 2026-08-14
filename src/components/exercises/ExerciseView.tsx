@@ -2,9 +2,27 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Exercise, Scaffold } from '../../engine/types'
 import { compareRelation, compareWord, sameAnswer } from '../../engine/validate'
 import { numberToFrench } from '../../lib/french'
-import { BigButton, Cube, Grizzy, Items, Jar, Lemming, NumberPad } from '../kid/ui'
+import { BigButton, Cube, Grizzy, Items, Jar, Lemming, PadScreen } from '../kid/ui'
 
 export function ExerciseView({
+  ex,
+  scaffold,
+  leftHanded,
+  onResult,
+}: {
+  ex: Exercise
+  scaffold: Scaffold
+  leftHanded: boolean
+  onResult: (ok: boolean) => void
+}) {
+  return (
+    <div className="flex min-h-0 w-full flex-1">
+      <ExerciseInner ex={ex} scaffold={scaffold} leftHanded={leftHanded} onResult={onResult} />
+    </div>
+  )
+}
+
+function ExerciseInner({
   ex,
   scaffold,
   leftHanded,
@@ -125,7 +143,7 @@ function GroupTenView({ ex, onResult }: { ex: Extract<Exercise, { type: 'group-t
   const units = ex.total % 10
   const [value, setValue] = useState('')
   return (
-    <div className="flex flex-1 flex-col items-center gap-3 overflow-auto p-3">
+    <PadScreen value={value} onChange={setValue} onSubmit={() => onResult(Number(value) === ex.total)}>
       <div className="flex flex-wrap justify-center gap-3">
         {Array.from({ length: tens }, (_, i) => (
           <div key={i} className="rounded-xl bg-wood/80 p-1">
@@ -148,9 +166,8 @@ function GroupTenView({ ex, onResult }: { ex: Extract<Exercise, { type: 'group-t
           </div>
         )}
       </div>
-      <p className="text-cream">Combien en tout ?</p>
-      <NumberPad value={value} onChange={setValue} onSubmit={() => onResult(Number(value) === ex.total)} />
-    </div>
+      <p className="mt-2 text-xl font-semibold text-bark">Combien en tout ?</p>
+    </PadScreen>
   )
 }
 
@@ -300,21 +317,10 @@ function WriteView({
 }) {
   const [v, setV] = useState('')
   return (
-    <div className="flex flex-1 items-center justify-center gap-6 p-4">
-      <div className="text-center">
-        <Grizzy className="mx-auto h-32" />
-        <p className="mt-2 rounded-2xl bg-cream/90 px-4 py-2 text-2xl">{ex.spoken}</p>
-      </div>
-      <div>
-        <p className="mb-2 text-center text-4xl font-bold text-cream">{v || '…'}</p>
-        <NumberPad
-          value={v}
-          onChange={setV}
-          leftHanded={leftHanded}
-          onSubmit={() => onResult(Number(v) === ex.value)}
-        />
-      </div>
-    </div>
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.value)}>
+      <Grizzy className="h-28 sm:h-36" />
+      <p className="mt-2 rounded-2xl bg-white px-4 py-2 text-2xl font-bold text-bark sm:text-3xl">{ex.spoken}</p>
+    </PadScreen>
   )
 }
 
@@ -329,15 +335,14 @@ function HoleView({
 }) {
   const [v, setV] = useState('')
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-3">
-      <p className="rounded-2xl bg-cream/95 px-6 py-3 text-4xl font-bold">{ex.promptShort}</p>
-      <NumberPad
-        value={v}
-        onChange={setV}
-        leftHanded={leftHanded}
-        onSubmit={() => onResult(sameAnswer(ex.answer, Number(v)))}
-      />
-    </div>
+    <PadScreen
+      value={v}
+      onChange={setV}
+      leftHanded={leftHanded}
+      onSubmit={() => onResult(sameAnswer(ex.answer, Number(v)))}
+    >
+      <p className="rounded-2xl bg-white px-6 py-3 text-4xl font-bold text-bark sm:text-5xl">{ex.promptShort}</p>
+    </PadScreen>
   )
 }
 
@@ -371,21 +376,22 @@ function FluencyView({
     )
   }
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-3">
-      <p className="text-cream">{left} s · {ok} justes</p>
-      <p className="rounded-2xl bg-cream px-6 py-3 text-4xl font-bold">{item.promptShort}</p>
-      <NumberPad
-        value={v}
-        onChange={setV}
-        leftHanded={leftHanded}
-        onSubmit={() => {
-          const good = sameAnswer(item.answer, Number(v))
-          if (good) setOk((n) => n + 1)
-          setV('')
-          setI((n) => n + 1)
-        }}
-      />
-    </div>
+    <PadScreen
+      value={v}
+      onChange={setV}
+      leftHanded={leftHanded}
+      onSubmit={() => {
+        const good = sameAnswer(item.answer, Number(v))
+        if (good) setOk((n) => n + 1)
+        setV('')
+        setI((n) => n + 1)
+      }}
+    >
+      <p className="text-lg font-semibold text-bark">
+        {left} s · {ok} justes
+      </p>
+      <p className="rounded-2xl bg-white px-6 py-3 text-4xl font-bold text-bark sm:text-5xl">{item.promptShort}</p>
+    </PadScreen>
   )
 }
 
@@ -401,30 +407,31 @@ function SlateView({
   const [step, setStep] = useState(0)
   const [v, setV] = useState('')
   const done = step >= ex.steps.length
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-3">
-      <div className="w-full max-w-lg rounded-3xl bg-[#1b3a2a] p-4 text-cream shadow-inner">
-        <p className="text-3xl font-bold text-honey">{ex.start} + {ex.add}</p>
-        {ex.steps.slice(0, step + (done ? 0 : 1)).map((s) => (
-          <p key={s} className="mt-2 text-lg">
-            {s}
-          </p>
-        ))}
-      </div>
-      {!done ? (
-        <BigButton onClick={() => setStep((s) => s + 1)}>Ensuite</BigButton>
-      ) : (
-        <>
-          <p className="text-cream">Écris le résultat</p>
-          <NumberPad
-            value={v}
-            onChange={setV}
-            leftHanded={leftHanded}
-            onSubmit={() => onResult(Number(v) === ex.answer)}
-          />
-        </>
-      )}
+  const slate = (
+    <div className="w-full max-w-lg rounded-3xl bg-[#1b3a2a] p-4 text-cream shadow-inner">
+      <p className="text-3xl font-bold text-honey">
+        {ex.start} + {ex.add}
+      </p>
+      {ex.steps.slice(0, step + (done ? 0 : 1)).map((s) => (
+        <p key={s} className="mt-2 text-lg">
+          {s}
+        </p>
+      ))}
     </div>
+  )
+  if (!done) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 p-3">
+        {slate}
+        <BigButton onClick={() => setStep((s) => s + 1)}>Ensuite</BigButton>
+      </div>
+    )
+  }
+  return (
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
+      {slate}
+      <p className="mt-2 text-xl font-semibold text-bark">Écris le résultat</p>
+    </PadScreen>
   )
 }
 
@@ -440,17 +447,11 @@ function ColumnView({
   const [v, setV] = useState('')
   const pad = (n: number) => String(n).padStart(2, ' ')
   return (
-    <div className="flex flex-1 items-center justify-center gap-6 p-4">
-      <pre className="rounded-2xl bg-cream p-4 font-mono text-3xl leading-tight">
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
+      <pre className="rounded-2xl bg-white p-4 font-mono text-4xl leading-tight text-bark">
         {`  ${pad(ex.terms[0])}\n+ ${pad(ex.terms[1])}\n───`}
       </pre>
-      <NumberPad
-        value={v}
-        onChange={setV}
-        leftHanded={leftHanded}
-        onSubmit={() => onResult(Number(v) === ex.answer)}
-      />
-    </div>
+    </PadScreen>
   )
 }
 
@@ -512,18 +513,17 @@ function ProblemView({
         </div>
       )}
       {phase === 2 && (
-        <div className="flex flex-col items-center gap-3">
-          <p className="text-cream">Quel nombre manque ?</p>
-          <NumberPad
-            value={v}
-            onChange={setV}
-            leftHanded={leftHanded}
-            onSubmit={() => {
-              if (sameAnswer(ex.answer, Number(v))) setPhase(3)
-              else onResult(false)
-            }}
-          />
-        </div>
+        <PadScreen
+          value={v}
+          onChange={setV}
+          leftHanded={leftHanded}
+          onSubmit={() => {
+            if (sameAnswer(ex.answer, Number(v))) setPhase(3)
+            else onResult(false)
+          }}
+        >
+          <p className="text-xl font-semibold text-bark">Quel nombre manque ?</p>
+        </PadScreen>
       )}
       {phase === 3 && (
         <div className="flex flex-col items-center gap-3">
@@ -618,19 +618,18 @@ function TimesView({
 }) {
   const [v, setV] = useState('')
   return (
-    <div className="flex flex-1 flex-col items-center gap-3 p-3">
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
       <div className="flex flex-wrap justify-center gap-3">
         {Array.from({ length: ex.groups }, (_, i) => (
-          <div key={i} className="rounded-xl bg-cream/90 p-1">
+          <div key={i} className="rounded-xl bg-white p-1">
             <Items kind="jar" n={ex.each} />
           </div>
         ))}
       </div>
-      <p className="text-cream">
+      <p className="mt-2 text-2xl font-bold text-bark">
         {ex.groups} fois {ex.each} = ?
       </p>
-      <NumberPad value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)} />
-    </div>
+    </PadScreen>
   )
 }
 
@@ -646,8 +645,8 @@ function HalfView({
   const [v, setV] = useState('')
   const parts = ex.kind === 'quart' ? 4 : 2
   return (
-    <div className="flex flex-1 flex-col items-center gap-3 p-3">
-      <div className="relative h-40 w-40 overflow-hidden rounded-full bg-honey shadow-inner">
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
+      <div className="relative h-32 w-32 overflow-hidden rounded-full bg-honey shadow-inner sm:h-40 sm:w-40">
         {Array.from({ length: parts }, (_, i) => (
           <div
             key={i}
@@ -656,11 +655,10 @@ function HalfView({
           />
         ))}
       </div>
-      <p className="text-cream">
+      <p className="mt-2 text-2xl font-bold text-bark">
         {ex.kind === 'quart' ? 'Un quart' : 'La moitié'} de {ex.whole}
       </p>
-      <NumberPad value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)} />
-    </div>
+    </PadScreen>
   )
 }
 
@@ -860,12 +858,9 @@ function SolidView({
 }) {
   const [v, setV] = useState('')
   return (
-    <div className="flex flex-1 items-center justify-center gap-6 p-4">
-      <div
-        className={`h-28 ${ex.solid === 'cube' ? 'w-28' : 'w-40'} bg-honey shadow-[8px_8px_0_#8b5a33]`}
-      />
-      <NumberPad value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)} />
-    </div>
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
+      <div className={`h-28 ${ex.solid === 'cube' ? 'w-28' : 'w-40'} bg-honey shadow-[8px_8px_0_#8b5a33]`} />
+    </PadScreen>
   )
 }
 
@@ -930,8 +925,8 @@ function TallyView({
 }) {
   const [v, setV] = useState('')
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-3">
-      <table className="overflow-hidden rounded-2xl bg-cream text-xl">
+    <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
+      <table className="overflow-hidden rounded-2xl bg-white text-xl">
         <tbody>
           {ex.labels.map((l, i) => (
             <tr key={l} className="border-b border-wood/20">
@@ -943,8 +938,7 @@ function TallyView({
           ))}
         </tbody>
       </table>
-      <NumberPad value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)} />
-    </div>
+    </PadScreen>
   )
 }
 
@@ -958,30 +952,33 @@ function BarView({
   onResult: (ok: boolean) => void
 }) {
   const [v, setV] = useState('')
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-3">
-      <div className="flex items-end gap-4 rounded-2xl bg-cream/90 p-4">
-        {ex.values.map((n, i) => (
-          <button
-            key={ex.labels[i]}
-            type="button"
-            className="flex flex-col items-center"
-            onClick={() => {
-              if (ex.mode === 'max') onResult(i === ex.answer)
-            }}
-          >
-            <div className="flex flex-col-reverse gap-0.5">
-              {Array.from({ length: n }, (_, k) => (
-                <Cube key={k} className="h-6 w-6" />
-              ))}
-            </div>
-            <span className="mt-1 text-sm">{ex.labels[i]}</span>
-          </button>
-        ))}
-      </div>
-      {ex.mode === 'value' && (
-        <NumberPad value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)} />
-      )}
+  const chart = (
+    <div className="flex items-end gap-4 rounded-2xl bg-white p-4">
+      {ex.values.map((n, i) => (
+        <button
+          key={ex.labels[i]}
+          type="button"
+          className="flex flex-col items-center"
+          onClick={() => {
+            if (ex.mode === 'max') onResult(i === ex.answer)
+          }}
+        >
+          <div className="flex flex-col-reverse gap-0.5">
+            {Array.from({ length: n }, (_, k) => (
+              <Cube key={k} className="h-6 w-6" />
+            ))}
+          </div>
+          <span className="mt-1 text-sm">{ex.labels[i]}</span>
+        </button>
+      ))}
     </div>
   )
+  if (ex.mode === 'value') {
+    return (
+      <PadScreen value={v} onChange={setV} leftHanded={leftHanded} onSubmit={() => onResult(Number(v) === ex.answer)}>
+        {chart}
+      </PadScreen>
+    )
+  }
+  return <div className="flex flex-1 flex-col items-center justify-center p-3">{chart}</div>
 }

@@ -41,31 +41,92 @@ export function NumberPad({
   onChange,
   onSubmit,
   leftHanded,
+  showDisplay = true,
 }: {
   value: string
   onChange: (v: string) => void
   onSubmit: () => void
   leftHanded?: boolean
+  showDisplay?: boolean
 }) {
-  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', 'OK']
+  const keys = [
+    { id: '1', label: '1' },
+    { id: '2', label: '2' },
+    { id: '3', label: '3' },
+    { id: '4', label: '4' },
+    { id: '5', label: '5' },
+    { id: '6', label: '6' },
+    { id: '7', label: '7' },
+    { id: '8', label: '8' },
+    { id: '9', label: '9' },
+    { id: 'back', label: '←' },
+    { id: '0', label: '0' },
+    { id: 'ok', label: 'OK' },
+  ]
   return (
-    <div className={`grid grid-cols-3 gap-2 ${leftHanded ? 'order-first' : ''}`}>
-      {keys.map((k) => (
-        <button
-          key={k}
-          type="button"
-          className={`min-h-14 rounded-2xl text-2xl font-bold shadow ${
-            k === 'OK' ? 'bg-moss text-white' : 'bg-cream text-bark'
-          }`}
-          onClick={() => {
-            if (k === '⌫') onChange(value.slice(0, -1))
-            else if (k === 'OK') onSubmit()
-            else if (value.length < 3) onChange(value + k)
-          }}
+    <div className={`numpad w-full ${leftHanded ? 'order-first' : ''}`}>
+      {showDisplay && (
+        <div
+          aria-live="polite"
+          className="numpad-display mb-2 flex min-h-14 items-center justify-center rounded-3xl bg-white text-4xl font-bold tabular-nums text-bark shadow-inner sm:min-h-16 sm:text-5xl"
         >
-          {k}
-        </button>
-      ))}
+          {value || '…'}
+        </div>
+      )}
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        {keys.map((k) => (
+          <button
+            key={k.id}
+            type="button"
+            aria-label={k.id === 'back' ? 'Effacer' : k.id === 'ok' ? 'Valider' : k.label}
+            className={`numpad-key touch-manipulation rounded-2xl font-bold shadow-md active:scale-95 ${
+              k.id === 'ok'
+                ? 'bg-moss text-white'
+                : k.id === 'back'
+                  ? 'bg-wood text-cream'
+                  : 'bg-white text-bark'
+            }`}
+            onClick={() => {
+              if (k.id === 'back') onChange(value.slice(0, -1))
+              else if (k.id === 'ok') onSubmit()
+              else if (value.length < 3) onChange(value + k.label)
+            }}
+          >
+            {k.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function PadScreen({
+  children,
+  value,
+  onChange,
+  onSubmit,
+  leftHanded,
+}: {
+  children?: ReactNode
+  value: string
+  onChange: (v: string) => void
+  onSubmit: () => void
+  leftHanded?: boolean
+}) {
+  return (
+    <div
+      className={`flex min-h-0 w-full flex-1 flex-col ${
+        leftHanded ? 'md:flex-row-reverse' : 'md:flex-row'
+      }`}
+    >
+      {children && (
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto p-3">
+          {children}
+        </div>
+      )}
+      <div className="flex w-full shrink-0 justify-center px-3 pb-4 pt-1 md:w-[min(52%,28rem)] md:items-center md:px-3 md:pb-4 md:pt-2">
+        <NumberPad value={value} onChange={onChange} onSubmit={onSubmit} leftHanded={leftHanded} />
+      </div>
     </div>
   )
 }
